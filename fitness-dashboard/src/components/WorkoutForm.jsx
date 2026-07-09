@@ -1,222 +1,212 @@
 import React, { useState } from "react";
 
+const initialWorkout = {
+  workoutName: "",
+  category: "",
+  duration: "",
+  calories: "",
+  date: "",
+  trainer: "",
+  difficulty: "",
+  notes: "",
+};
+
 const WorkoutForm = ({ addWorkout }) => {
-  const [workout, setWorkout] = useState({
-    workoutName: "",
-    category: "",
-    duration: "",
-    calories: "",
-    date: "",
-    trainer: "",
-    difficulty: "",
-    notes: "",
-  });
+  const [formData, setFormData] = useState(initialWorkout);
+  const [status, setStatus] = useState("");
 
-  const [message, setMessage] = useState("");
+  const categoryList = [
+    "Cardio",
+    "Strength",
+    "Yoga",
+    "Cycling",
+    "Running",
+    "Swimming",
+  ];
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
+  const difficultyList = [
+    "Beginner",
+    "Intermediate",
+    "Advanced",
+  ];
 
-    setWorkout((prevWorkout) => ({
-      ...prevWorkout,
-      [name]: value,
+  const updateField = ({ target }) => {
+    setFormData((current) => ({
+      ...current,
+      [target.name]: target.value,
     }));
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const validateForm = () => {
+    return (
+      formData.workoutName.trim() &&
+      formData.category &&
+      formData.duration
+    );
+  };
 
-    if (
-      workout.workoutName === "" ||
-      workout.category === "" ||
-      workout.duration === ""
-    ) {
-      setMessage("Please fill in all required fields.");
+  const submitWorkout = (e) => {
+    e.preventDefault();
+
+    if (!validateForm()) {
+      setStatus("Please complete all mandatory fields.");
       return;
     }
 
-    addWorkout(workout);
+    addWorkout(formData);
 
-    setMessage("Workout added successfully!");
+    setStatus("Workout saved successfully.");
 
-    setWorkout({
-      workoutName: "",
-      category: "",
-      duration: "",
-      calories: "",
-      date: "",
-      trainer: "",
-      difficulty: "",
-      notes: "",
-    });
+    setFormData(initialWorkout);
   };
 
-  const handleReset = () => {
-    setWorkout({
-      workoutName: "",
-      category: "",
-      duration: "",
-      calories: "",
-      date: "",
-      trainer: "",
-      difficulty: "",
-      notes: "",
-    });
-
-    setMessage("");
+  const clearForm = () => {
+    setFormData(initialWorkout);
+    setStatus("");
   };
 
   return (
-    <div className="workout-form-container">
-      <h2>Add New Workout</h2>
+    <section className="workout-form-container">
 
-      <p>
-        Fill in the workout details below to keep track of your fitness
-        activities and monitor your daily progress.
-      </p>
+      <header>
+        <h2>Create Workout</h2>
+        <p>
+          Record your workouts and monitor your overall fitness performance.
+        </p>
+      </header>
 
-      {message && <p className="message">{message}</p>}
+      {status && <div className="message">{status}</div>}
 
-      <form onSubmit={handleSubmit}>
-        {/* Workout Name */}
+      <form onSubmit={submitWorkout}>
+
         <div className="form-group">
           <label>Workout Name</label>
-
           <input
             type="text"
             name="workoutName"
-            placeholder="Enter workout name"
-            value={workout.workoutName}
-            onChange={handleChange}
+            value={formData.workoutName}
+            placeholder="Workout Name"
+            onChange={updateField}
           />
         </div>
 
-        {/* Category */}
         <div className="form-group">
-          <label>Workout Category</label>
+          <label>Category</label>
 
           <select
             name="category"
-            value={workout.category}
-            onChange={handleChange}
+            value={formData.category}
+            onChange={updateField}
           >
-            <option value="">Select Category</option>
-            <option value="Cardio">Cardio</option>
-            <option value="Strength">Strength Training</option>
-            <option value="Yoga">Yoga</option>
-            <option value="Cycling">Cycling</option>
-            <option value="Running">Running</option>
-            <option value="Swimming">Swimming</option>
+            <option value="">Choose Category</option>
+
+            {categoryList.map((item) => (
+              <option key={item}>{item}</option>
+            ))}
           </select>
         </div>
 
-        {/* Duration */}
         <div className="form-group">
-          <label>Duration (Minutes)</label>
+          <label>Duration</label>
 
           <input
             type="number"
             name="duration"
-            placeholder="Example: 60"
-            value={workout.duration}
-            onChange={handleChange}
+            value={formData.duration}
+            placeholder="Minutes"
+            onChange={updateField}
           />
         </div>
 
-        {/* Calories */}
         <div className="form-group">
-          <label>Calories Burned</label>
+          <label>Calories</label>
 
           <input
             type="number"
             name="calories"
-            placeholder="Example: 500"
-            value={workout.calories}
-            onChange={handleChange}
+            value={formData.calories}
+            placeholder="Calories Burned"
+            onChange={updateField}
           />
         </div>
 
-        {/* Date */}
         <div className="form-group">
-          <label>Workout Date</label>
+          <label>Date</label>
 
           <input
             type="date"
             name="date"
-            value={workout.date}
-            onChange={handleChange}
+            value={formData.date}
+            onChange={updateField}
           />
         </div>
 
-        {/* Trainer */}
         <div className="form-group">
-          <label>Trainer Name</label>
+          <label>Trainer</label>
 
           <input
             type="text"
             name="trainer"
-            placeholder="Enter trainer name"
-            value={workout.trainer}
-            onChange={handleChange}
+            value={formData.trainer}
+            placeholder="Trainer Name"
+            onChange={updateField}
           />
         </div>
 
-        {/* Difficulty */}
         <div className="form-group">
-          <label>Difficulty Level</label>
+          <label>Difficulty</label>
 
           <select
             name="difficulty"
-            value={workout.difficulty}
-            onChange={handleChange}
+            value={formData.difficulty}
+            onChange={updateField}
           >
-            <option value="">Select Difficulty</option>
-            <option value="Beginner">Beginner</option>
-            <option value="Intermediate">Intermediate</option>
-            <option value="Advanced">Advanced</option>
+            <option value="">Choose Difficulty</option>
+
+            {difficultyList.map((level) => (
+              <option key={level}>{level}</option>
+            ))}
           </select>
         </div>
 
-        {/* Notes */}
         <div className="form-group">
-          <label>Workout Notes</label>
+          <label>Notes</label>
 
           <textarea
+            rows={4}
             name="notes"
-            rows="5"
-            placeholder="Write additional notes about your workout..."
-            value={workout.notes}
-            onChange={handleChange}
-          ></textarea>
+            value={formData.notes}
+            placeholder="Workout Notes..."
+            onChange={updateField}
+          />
         </div>
 
-        {/* Buttons */}
         <div className="button-group">
-          <button type="submit">
-            Save Workout
-          </button>
+          <button type="submit">Add Workout</button>
 
           <button
             type="button"
-            onClick={handleReset}
+            onClick={clearForm}
           >
-            Reset Form
+            Clear
           </button>
         </div>
+
       </form>
 
-      <div className="form-footer">
-        <h3>Benefits of Tracking Workouts</h3>
+      <footer className="form-footer">
+        <h3>Workout Benefits</h3>
 
         <ul>
-          <li>✔ Track your daily exercise routine.</li>
-          <li>✔ Monitor calories burned.</li>
-          <li>✔ Improve workout consistency.</li>
-          <li>✔ Set and achieve fitness goals.</li>
-          <li>✔ Analyze your weekly and monthly progress.</li>
+          <li>Track daily workouts</li>
+          <li>Monitor calorie consumption</li>
+          <li>Improve consistency</li>
+          <li>Achieve fitness milestones</li>
+          <li>Review overall progress</li>
         </ul>
-      </div>
-    </div>
+      </footer>
+
+    </section>
   );
 };
 
