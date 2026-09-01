@@ -1,11 +1,17 @@
 import React from "react";
+import Navbar from "./components/Navbar/Navbar";
 
-const Navbar = () => {
+const App = () => {
   return (
-    <div style={{ background: "#222", color: "#fff", padding: "10px" }}>
-      <h2>Fitness Dashboard</h2>
+    <div>
+      <Navbar />
+
+      <main>
+        <h1>Welcome to Your Fitness Dashboard</h1>
+        <p>Track your workouts, progress, and daily fitness goals.</p>
+      </main>
     </div>
   );
 };
 
-export default Navbar;
+export default App;
