@@ -1,4 +1,5 @@
-import React from "react";
+
+import React, { useMemo } from "react";
 import {
   BarChart,
   Bar,
@@ -9,63 +10,77 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const weeklyCalories = [
-  { name: "Monday", value: 200 },
-  { name: "Tuesday", value: 400 },
-  { name: "Wednesday", value: 300 },
-  { name: "Thursday", value: 500 },
-  { name: "Friday", value: 450 },
-  { name: "Saturday", value: 600 },
-  { name: "Sunday", value: 350 },
+const calorieData = [
+  { day: "Mon", calories: 200 },
+  { day: "Tue", calories: 400 },
+  { day: "Wed", calories: 300 },
+  { day: "Thu", calories: 500 },
+  { day: "Fri", calories: 450 },
+  { day: "Sat", calories: 600 },
+  { day: "Sun", calories: 350 },
 ];
 
-function CaloriesChart() {
-  const totalCalories = weeklyCalories.reduce(
-    (total, item) => total + item.value,
-    0
+const CaloriesChart = () => {
+  const total = useMemo(
+    () => calorieData.reduce((sum, item) => sum + item.calories, 0),
+    []
   );
 
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="custom-tooltip">
+          <strong>{label}</strong>
+          <p>{payload[0].value} kcal</p>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
-    <section className="calories-chart">
-      <div className="chart-header">
-        <h2>Weekly Calories</h2>
-        <p>Total: {totalCalories} kcal</p>
+    <div className="calories-container">
+      <div className="calories-header">
+        <div>
+          <h2>Weekly Calories</h2>
+          <p>Your calorie activity this week</p>
+        </div>
+
+        <div className="calories-total">
+          <h3>{total.toLocaleString()}</h3>
+          <span>Total kcal</span>
+        </div>
       </div>
 
-      <div style={{ width: "100%", height: 300 }}>
-        <ResponsiveContainer>
-          <BarChart
-            data={weeklyCalories}
-            margin={{
-              top: 20,
-              right: 20,
-              left: 0,
-              bottom: 10,
-            }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
+      <div className="calories-chart">
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={calorieData}>
+            <CartesianGrid strokeDasharray="4 4" vertical={false} />
 
             <XAxis
-              dataKey="name"
-              tickFormatter={(day) => day.substring(0, 3)}
+              dataKey="day"
+              axisLine={false}
+              tickLine={false}
             />
 
-            <YAxis />
-
-            <Tooltip
-              formatter={(value) => [`${value} kcal`, "Calories"]}
+            <YAxis
+              axisLine={false}
+              tickLine={false}
             />
+
+            <Tooltip content={<CustomTooltip />} />
 
             <Bar
-              dataKey="value"
-              name="Calories"
-              radius={[6, 6, 0, 0]}
+              dataKey="calories"
+              fill="#6366f1"
+              radius={[8, 8, 0, 0]}
+              barSize={35}
             />
           </BarChart>
         </ResponsiveContainer>
       </div>
-    </section>
+    </div>
   );
-}
+};
 
 export default CaloriesChart;
