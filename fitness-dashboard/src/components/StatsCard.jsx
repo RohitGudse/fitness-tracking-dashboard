@@ -1,19 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-/**
- * StatsCard Component
- * -------------------
- * Reusable dashboard card for displaying statistics.
- *
- * Props:
- * title      -> Card Heading
- * value      -> Main Value
- * icon       -> Emoji/Icon
- * bgColor    -> Background Color
- * textColor  -> Text Color
- */
-
 const StatsCard = ({
   title,
   value,
